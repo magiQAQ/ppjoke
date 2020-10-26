@@ -1,0 +1,17 @@
+plugins {
+    id 'java-library'
+    id 'kotlin'
+    id 'kotlin-kapt'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'com.alibaba:fastjson:1.2.74'
+    implementation project(path: ':libnavannotation')
+    kapt 'com.google.auto.service:auto-service:1.0-rc7'
+    //noinspection AnnotationProcessorOnCompilePath
+    implementation 'com.google.auto.service:auto-service:1.0-rc7'
+}
+
+sourceCompatibility = "8"
+targetCompatibility = "8"
