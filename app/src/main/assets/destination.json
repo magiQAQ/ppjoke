@@ -1,4 +1,5 @@
 {
+
   "main/tabs/dash": {
     "isFragment": true,
     "asStarter": false,
@@ -23,4 +24,5 @@
     "id": 314860215,
     "clazzName": "com.xch.ppjoke.ui.notifications.NotificationsFragment"
   }
+
 }

@@ -15,7 +15,7 @@ object AppConfig {
         )
     }
 
-    val bottomBar: BottomBar by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+    val bottomBarConfig: BottomBar by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
         val content = parseFile("main_tabs_config.json")
         JSON.parseObject(content, BottomBar::class.java)
     }

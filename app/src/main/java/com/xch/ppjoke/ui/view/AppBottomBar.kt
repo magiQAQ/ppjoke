@@ -10,10 +10,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.xch.ppjoke.R
-import com.xch.ppjoke.util.AppConfig.bottomBar
+import com.xch.ppjoke.util.AppConfig.bottomBarConfig
 import com.xch.ppjoke.util.AppConfig.destConfig
 
-internal class AppBottomBar : BottomNavigationView {
+@SuppressLint("RestrictedApi")
+internal class AppBottomBar: BottomNavigationView{
 
     companion object {
         val icons: IntArray = intArrayOf(
@@ -22,43 +23,62 @@ internal class AppBottomBar : BottomNavigationView {
         )
     }
 
-    constructor(context: Context) : super(context, null)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs, 0)
-    @SuppressLint("RestrictedApi")
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
-        val bottomBar = bottomBar
-        val tabs = bottomBar.tabs
-        val states = arrayOfNulls<IntArray>(2)
-        states[0] = intArrayOf(android.R.attr.state_selected)
-        states[1] = intArrayOf()
+    constructor(context: Context): super(context)
+
+    constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet)
+
+    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int): super(context, attributeSet, defStyleAttr)
+
+    init {
+        val config = bottomBarConfig
+        val states = arrayOf(intArrayOf(android.R.attr.state_selected), intArrayOf())
         val colors = intArrayOf(
-            Color.parseColor(bottomBar.activeColor),
-            Color.parseColor(bottomBar.inActiveColor)
+            Color.parseColor(config.activeColor),
+            Color.parseColor(config.inActiveColor)
         )
         val colorStateList = ColorStateList(states, colors)
         itemIconTintList = colorStateList
         itemTextColor = colorStateList
+        //LABEL_VISIBILITY_LABELED:设置按钮的文本为一直显示模式
+        //LABEL_VISIBILITY_AUTO:当按钮个数小于三个时一直显示，或者当按钮个数大于3个且小于5个时，被选中的那个按钮文本才会显示
+        //LABEL_VISIBILITY_SELECTED：只有被选中的那个按钮的文本才会显示
+        //LABEL_VISIBILITY_UNLABELED:所有的按钮文本都不显示
         labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
-        selectedItemId = bottomBar.selectTab
-        for (i in tabs.indices) {
-            val tab = tabs[i]
+        // 为bottomNavigationView添加按钮和图标
+        val tabs = config.tabs
+        for (tab in tabs) {
             if (!tab.enable) continue
-            val id = getId(tab.pageUrl)
-            val item = menu.add(0, 0, tab.index, tab.title)
-            item.setIcon(icons[i])
-
+            val itemId = getItemId(tab.pageUrl)
+            if (itemId < 0) continue
+            val menuItem = menu.add(0, itemId, tab.index, tab.title)
+            menuItem.setIcon(icons[tab.index])
         }
-        for (i in tabs.indices) {
-            val tab = tabs[i]
+        // 在添加完成后再为icon设置大小
+        var index = 0
+        for (tab in tabs) {
+            if (!tab.enable) continue
+            val itemId = getItemId(tab.pageUrl)
+            if (itemId < 0) continue
+
             val iconSize = dp2dx(tab.size)
             val menuView = getChildAt(0) as BottomNavigationMenuView
-            val itemView = menuView.getChildAt(tab.index) as BottomNavigationItemView
+            val itemView = menuView.getChildAt(index) as BottomNavigationItemView
             itemView.setIconSize(iconSize)
 
+            if (tab.title.isEmpty()) {
+                val tintColor = if (tab.tintColor.isNullOrEmpty() ) Color.parseColor("#ff678f") else Color.parseColor(tab.tintColor)
+                itemView.setIconTintList(ColorStateList.valueOf(tintColor))
+                itemView.setShifting(false)
+            }
+            index++
+        }
+        // bottomNavigationView默认选中项
+        if (config.selectTab != 0) {
+            val selectTab = tabs[config.selectTab]
+            if (selectTab.enable) {
+                val itemId = getItemId(selectTab.pageUrl)
+                post { selectedItemId = itemId }
+            }
         }
     }
 
@@ -66,7 +86,7 @@ internal class AppBottomBar : BottomNavigationView {
         return (context.resources.displayMetrics.density * size + 0.5).toInt()
     }
 
-    private fun getId(pageUrl: String): Int {
+    private fun getItemId(pageUrl: String): Int {
         val (_, _, id) = destConfig[pageUrl] ?: return -1
         return id
     }
