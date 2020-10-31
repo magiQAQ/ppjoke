@@ -17,7 +17,7 @@ object NavGraphBuilder {
 //        //NavGraphNavigator也是页面路由导航器的一种，只不过他比较特殊。
 //        //它只为默认的展示页提供导航服务,但真正的跳转还是交给对应的navigator来完成的
 //    }
-    fun build(controller: NavController,fragmentActivity: FragmentActivity, containerId: Int) {
+    fun build(fragmentActivity: FragmentActivity, childFragmentManager: FragmentManager ,controller: NavController, containerId: Int) {
         val provider = controller.navigatorProvider
 
 //        val fragmentNavigator = provider.getNavigator(FragmentNavigator::class.java)

@@ -17,10 +17,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
-        val navController = findNavController(R.id.nav_host_fragment)
-        navView.setupWithNavController(navController)
+        val fragmentContainer = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!
+        val navController = NavHostFragment.findNavController(fragmentContainer)
+//        navView.setupWithNavController(navController)
 
-        NavGraphBuilder.build(navController)
+        NavGraphBuilder.build(this, fragmentContainer.childFragmentManager, navController, fragmentContainer.id)
 
         navView.setOnNavigationItemSelectedListener {
             navController.navigate(it.itemId)
