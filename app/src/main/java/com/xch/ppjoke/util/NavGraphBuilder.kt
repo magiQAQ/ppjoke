@@ -8,6 +8,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph
 import androidx.navigation.NavGraphNavigator
 import androidx.navigation.fragment.FragmentNavigator
+import com.xch.ppjoke.navigator.FixFragmentNavigator
 
 object NavGraphBuilder {
 //    fun build(activity: FragmentActivity, childFragmentManager: FragmentManager, controller: NavController, containerId: Int) {
@@ -16,10 +17,13 @@ object NavGraphBuilder {
 //        //NavGraphNavigator也是页面路由导航器的一种，只不过他比较特殊。
 //        //它只为默认的展示页提供导航服务,但真正的跳转还是交给对应的navigator来完成的
 //    }
-    fun build(controller: NavController) {
+    fun build(controller: NavController,fragmentActivity: FragmentActivity, containerId: Int) {
         val provider = controller.navigatorProvider
 
-        val fragmentNavigator = provider.getNavigator(FragmentNavigator::class.java)
+//        val fragmentNavigator = provider.getNavigator(FragmentNavigator::class.java)
+        // fragment的导航此处使用我们定制的FixFragmentNavigator，底部Tab切换时 使用hide()/show(),而不是replace()
+        val fragmentNavigator = FixFragmentNavigator(fragmentActivity, fragmentActivity.supportFragmentManager, containerId)
+        provider.addNavigator(fragmentNavigator)
         val activityNavigator = provider.getNavigator(ActivityNavigator::class.java)
 
         val navGraph = NavGraph(NavGraphNavigator(provider))
