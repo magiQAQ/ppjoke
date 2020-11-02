@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 
 object ApiService {
 
-    private val okHttpClient by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+    val okHttpClient by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
         val logInterceptor = HttpLoggingInterceptor()
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
 
