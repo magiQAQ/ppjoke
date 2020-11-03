@@ -1,6 +1,6 @@
 package com.xch.libnetwork
 
-class Response<T> {
+class ApiResponse<T> {
     var success = false
     var status = 0
     var message: String? = null

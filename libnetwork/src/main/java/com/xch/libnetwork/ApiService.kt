@@ -16,7 +16,13 @@ object ApiService {
             .connectTimeout(5, TimeUnit.SECONDS)
             .addInterceptor(logInterceptor)
             .build()
+    }
 
+    lateinit var baseUrl: String
+    lateinit var convert: Convert<*>
 
+    fun init(baseUrl: String, convert: Convert<*>?) {
+        this.baseUrl = baseUrl
+        this.convert = convert ?: JsonConvert()
     }
 }

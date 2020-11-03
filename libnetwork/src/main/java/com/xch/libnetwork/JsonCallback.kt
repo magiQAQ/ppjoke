@@ -1,15 +1,15 @@
 package com.xch.libnetwork
 
 abstract class JsonCallback<T> {
-    fun onSuccess(response: Response<T>) {
+    fun onSuccess(apiResponse: ApiResponse<T>) {
 
     }
 
-    fun onError(response: Response<T>) {
+    fun onError(apiResponse: ApiResponse<T>) {
 
     }
 
-    fun onCacheSuccess(response: Response<T>) {
+    fun onCacheSuccess(apiResponse: ApiResponse<T>) {
 
     }
 }
