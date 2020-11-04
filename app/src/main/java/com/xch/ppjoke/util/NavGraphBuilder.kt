@@ -42,7 +42,7 @@ object NavGraphBuilder {
                 destination.addDeepLink(value.pageUrl)
                 destination.setComponentName(
                     ComponentName(
-                        AppGlobals.getPackageName(),
+                        com.xch.libcommon.AppGlobals.getPackageName(),
                         value.clazzName
                     )
                 )

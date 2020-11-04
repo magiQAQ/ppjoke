@@ -21,7 +21,7 @@ object AppConfig {
     }
 
     private fun parseFile(fileName: String): String {
-        val assets = AppGlobals.application.resources.assets
+        val assets = com.xch.libcommon.AppGlobals.application.resources.assets
         return assets.open(fileName).readBytes().toString(Charset.defaultCharset())
     }
 }
