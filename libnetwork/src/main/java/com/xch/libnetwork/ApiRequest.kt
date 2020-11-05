@@ -2,10 +2,12 @@ package com.xch.libnetwork
 
 import android.util.Log
 import androidx.annotation.IntDef
+import com.xch.libnetwork.cache.CacheManager
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
 import java.io.IOException
+import java.io.Serializable
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
@@ -13,6 +15,7 @@ abstract class ApiRequest<T, R>(protected val url: String) {
     protected val headers = HashMap<String, String>()
     protected val params = HashMap<String, Any>()
     protected lateinit var cacheKey: String
+    protected var cacheStrategy: Int = 3
 
     companion object{
         //仅仅只访问本地缓存, 即便本地缓存不存在, 也不会发起网络请求
@@ -49,6 +52,11 @@ abstract class ApiRequest<T, R>(protected val url: String) {
         } catch (e: IllegalAccessException) {
             e.printStackTrace()
         }
+        return this as R
+    }
+
+    fun cacheStrategy(@CacheStrategy cacheStrategy: Int): R {
+        this.cacheStrategy = cacheStrategy
         return this as R
     }
 
@@ -134,7 +142,25 @@ abstract class ApiRequest<T, R>(protected val url: String) {
         result.success = success
         result.status = status
         result.message = message
+
+        if(result.success && result.body!=null && result.body is Serializable && cacheStrategy != NET_ONLY) {
+            saveCacheStrategy(result.body!!)
+        }
+
         return result
+    }
+
+    private fun saveCacheStrategy(body: T) {
+        val key = generateCacheKey()
+        CacheManager.save(key, body)
+    }
+
+    // 用户没有传入cacheKey就自动生成一个
+    private fun generateCacheKey() :String{
+        if (cacheKey.isEmpty()) {
+            cacheKey = createUrlFromParams(url, params)
+        }
+        return cacheKey
     }
 
     protected abstract fun generateRequest(builder: okhttp3.Request.Builder): okhttp3.Request
