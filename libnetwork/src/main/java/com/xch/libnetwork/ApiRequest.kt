@@ -13,6 +13,7 @@ import java.io.Serializable
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
+@Suppress("UNCHECKED_CAST")
 abstract class ApiRequest<T, R>(protected val url: String) {
     protected val headers = HashMap<String, String>()
     protected val params = HashMap<String, Any>()
@@ -122,7 +123,7 @@ abstract class ApiRequest<T, R>(protected val url: String) {
     }
 
     private fun getCall(): Call{
-        val builder = okhttp3.Request.Builder();
+        val builder = okhttp3.Request.Builder()
         headers.forEach { (key, value) ->
             builder.addHeader(key, value)
         }
