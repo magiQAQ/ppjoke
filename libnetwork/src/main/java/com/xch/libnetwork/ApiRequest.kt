@@ -1,7 +1,9 @@
 package com.xch.libnetwork
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.annotation.IntDef
+import androidx.arch.core.executor.ArchTaskExecutor
 import com.xch.libnetwork.cache.CacheManager
 import okhttp3.Call
 import okhttp3.Callback
@@ -65,29 +67,51 @@ abstract class ApiRequest<T, R>(protected val url: String) {
         return this as R
     }
 
+    /**
+     * 异步请求
+     * @param callback 结果的回调
+     */
+    @SuppressLint("RestrictedApi")
     fun execute(callback: JsonCallback<T>){
-        getCall().enqueue(object : Callback{
-            override fun onFailure(call: Call, e: IOException) {
-                val apiResponse = ApiResponse<T>()
-                apiResponse.message = e.message
-                callback.onError(apiResponse)
+        // 如果访问策略是只访问网络就不走缓存
+        if (cacheStrategy != NET_ONLY) {
+            ArchTaskExecutor.getIOThreadExecutor().execute{
+                val response = readCache()
+                callback.onCacheSuccess(response)
             }
+        }
 
-            override fun onResponse(call: Call, response: Response) {
-                val apiResponse = parseResponse(response, callback)
-                if (apiResponse.success) {
+        // 如果访问策略是只访问缓存就不走网络
+        if (cacheStrategy != CACHE_ONLY) {
+            getCall().enqueue(object : Callback{
+                override fun onFailure(call: Call, e: IOException) {
+                    val apiResponse = ApiResponse<T>()
+                    apiResponse.message = e.message
                     callback.onError(apiResponse)
-                } else {
-                    callback.onSuccess(apiResponse)
                 }
-            }
-        })
+
+                override fun onResponse(call: Call, response: Response) {
+                    val apiResponse = parseResponse(response, callback)
+                    if (apiResponse.success) {
+                        callback.onError(apiResponse)
+                    } else {
+                        callback.onSuccess(apiResponse)
+                    }
+                }
+            })
+        }
     }
 
-    private var mType : Type? = null
-    private var mClazz : Class<*>? = null
-
+    /**
+     * 同步请求
+     * 因为是同步请求, 所以访问策略只能是只访问网络和只访问缓存中的其中一种
+     * 默认只访问网络
+     * @return 服务器返回
+     */
     fun execute(): ApiResponse<T>?{
+        if (cacheStrategy == CACHE_ONLY) {
+            return readCache()
+        }
         try {
             val response = getCall().execute()
             return parseResponse(response, null)
@@ -105,6 +129,20 @@ abstract class ApiRequest<T, R>(protected val url: String) {
         val request = generateRequest(builder)
         return ApiService.okHttpClient.newCall(request)
     }
+
+    private fun readCache() : ApiResponse<T>{
+        val key = generateCacheKey()
+        val cache = CacheManager.getCache(key)
+        val result = ApiResponse<T>()
+        result.success = cache == null
+        result.status = 304
+        result.message = "缓存获取${if (result.success) "成功" else "失败"}"
+        result.body = cache as T?
+        return result
+    }
+
+    private var mType : Type? = null
+    private var mClazz : Class<*>? = null
 
     private fun parseResponse(response: Response, callback: JsonCallback<T>?) : ApiResponse<T>{
         var message = ""

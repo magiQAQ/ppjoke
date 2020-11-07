@@ -8,9 +8,14 @@ import com.xch.libcommon.AppGlobals
 @Database(entities = [Cache::class], version = 1, exportSchema = true)
 abstract class CacheDatabase: RoomDatabase() {
 
-    val database by lazy {
-        Room.databaseBuilder(AppGlobals.application, CacheDatabase::class.java,"ppjoke_cache")
-            .allowMainThreadQueries()
-            .build()
+    companion object{
+        val database by lazy {
+            Room.databaseBuilder(AppGlobals.application, CacheDatabase::class.java,"ppjoke_cache")
+                .allowMainThreadQueries()
+                .build()
+        }
     }
+
+    abstract fun cacheDao(): CacheDao
+
 }

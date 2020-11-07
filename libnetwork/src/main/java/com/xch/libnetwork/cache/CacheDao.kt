@@ -9,7 +9,7 @@ interface CacheDao {
     fun save(cache: Cache): Long
 
     @Query("select * from cache where 'key'=:key")
-    fun getCache(key: String): Cache
+    fun getCache(key: String): Cache?
 
     @Delete
     fun delete(cache: Cache): Int
