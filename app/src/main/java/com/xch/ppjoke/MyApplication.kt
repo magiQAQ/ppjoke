@@ -5,6 +5,6 @@ import android.app.Application
 class MyApplication: Application() {
     override fun onCreate() {
         super.onCreate()
-        com.xch.libcommon.AppGlobals.application = this
+        com.xch.libcommon.application = this
     }
 }

@@ -7,6 +7,7 @@ import androidx.navigation.ActivityNavigator
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph
 import androidx.navigation.NavGraphNavigator
+import com.xch.libcommon.getPackageName
 import com.xch.ppjoke.navigator.FixFragmentNavigator
 
 object NavGraphBuilder {
@@ -42,7 +43,7 @@ object NavGraphBuilder {
                 destination.addDeepLink(value.pageUrl)
                 destination.setComponentName(
                     ComponentName(
-                        com.xch.libcommon.AppGlobals.getPackageName(),
+                        getPackageName(),
                         value.clazzName
                     )
                 )

@@ -2,6 +2,7 @@ package com.xch.ppjoke.util
 
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.TypeReference
+import com.xch.libcommon.application
 import com.xch.ppjoke.model.BottomBar
 import com.xch.ppjoke.model.Destination
 import java.nio.charset.Charset
@@ -21,7 +22,7 @@ object AppConfig {
     }
 
     private fun parseFile(fileName: String): String {
-        val assets = com.xch.libcommon.AppGlobals.application.resources.assets
+        val assets = application.resources.assets
         return assets.open(fileName).readBytes().toString(Charset.defaultCharset())
     }
 }

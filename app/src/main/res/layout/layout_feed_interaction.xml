@@ -9,9 +9,14 @@
             name="feed"
             type="Feed" />
 
+        <variable
+            name="lifeCycleOwner"
+            type="androidx.lifecycle.LifecycleOwner" />
+
         <import type="com.xch.ppjoke.model.Feed" />
 
         <import type="com.xch.ppjoke.util.StringConvertKt" />
+
     </data>
 
     <LinearLayout
