@@ -13,6 +13,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.xch.libcommon.dp2px
 import com.xch.libcommon.getScreenHeight
 import com.xch.libcommon.getScreenWidth
+import jp.wasabeef.glide.transformations.BlurTransformation
 
 internal class PPImageView: AppCompatImageView {
 
@@ -73,5 +74,21 @@ internal class PPImageView: AppCompatImageView {
         val params = ViewGroup.MarginLayoutParams(finalWidth, finalHeight)
         params.leftMargin = if (height>width) dp2px(marginStart) else 0
         layoutParams = params
+    }
+
+    fun setBlurImageUrl(coverUrl: String, radius: Int) {
+        Glide.with(this).load(coverUrl).override(50)
+            .transform(BlurTransformation())
+            .dontAnimate()
+            .into(object : CustomTarget<Drawable>(){
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
+                    background = resource
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {}
+            })
     }
 }
