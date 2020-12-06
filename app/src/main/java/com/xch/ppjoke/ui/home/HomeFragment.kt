@@ -5,14 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.xch.navannotation.FragmentDestination
 import com.xch.ppjoke.R
+import com.xch.ppjoke.model.Feed
+import com.xch.ppjoke.ui.AbsListFragment
 
 @FragmentDestination(pageUrl = "main/tabs/home", asStarter = true)
-class HomeFragment : Fragment() {
+class HomeFragment : AbsListFragment<Feed>() {
 
     private lateinit var homeViewModel: HomeViewModel
 
@@ -29,5 +33,17 @@ class HomeFragment : Fragment() {
             textView.text = it
         })
         return root
+    }
+
+    override fun getAdapter(): PagedListAdapter<Feed, RecyclerView.ViewHolder> {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRefresh(refreshLayout: RefreshLayout) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onLoadMore(refreshLayout: RefreshLayout) {
+        TODO("Not yet implemented")
     }
 }
