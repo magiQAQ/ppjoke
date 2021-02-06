@@ -17,4 +17,10 @@ data class Comment(
     val userId: Int,
     val videoUrl: String,
     val width: Int
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is Comment) return false
+        return likeCount == other.likeCount && hasLiked == other.hasLiked
+                && author == other.author && ugc == other.ugc
+    }
+}

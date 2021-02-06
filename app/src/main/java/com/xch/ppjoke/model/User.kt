@@ -20,4 +20,15 @@ data class User(
     val score: Int,
     val topCommentCount: Int,
     val userId: Long
-): Serializable
+): Serializable {
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is User) return false
+        return name == other.name && avatar == other.avatar && description == other.description
+                && likeCount == other.likeCount && topCommentCount == other.topCommentCount
+                && followCount == other.followCount && followerCount == other.followerCount
+                && expires_time == other.expires_time && score == other.score
+                && historyCount == other.historyCount && commentCount == other.commentCount
+                && favoriteCount == other.favoriteCount && feedCount == other.feedCount
+                && hasFollow == other.hasFollow
+    }
+}

@@ -7,16 +7,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.xch.ppjoke.model.Feed
 
-class FeedAdapter() :
-    PagedListAdapter<Feed, FeedAdapter.ViewHolder>(object : DiffUtil.ItemCallback<Feed>() {
+class FeedAdapter : PagedListAdapter<Feed, FeedAdapter.ViewHolder> {
+
+    protected constructor():super(object : DiffUtil.ItemCallback<Feed>() {
         override fun areItemsTheSame(oldItem: Feed, newItem: Feed): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.itemId == newItem.itemId
         }
 
         override fun areContentsTheSame(oldItem: Feed, newItem: Feed): Boolean {
-            return oldItem == newItem
+            TODO("Not yet implemented")
         }
-    }) {
+    })
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         TODO("Not yet implemented")
