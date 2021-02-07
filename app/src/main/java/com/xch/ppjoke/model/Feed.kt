@@ -18,6 +18,12 @@ data class Feed(
     val topComment: Comment,
     val ugc: Ugc
 ) {
+
+    companion object{
+        const val TYPE_IMAGE = 1
+        const val TYPE_VIDEO = 2
+    }
+
     override fun equals(other: Any?): Boolean {
         if (other == null || other !is Feed) return false
         return id == other.id && itemId == other.itemId && itemType == other.itemType
